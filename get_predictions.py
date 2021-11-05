@@ -1,7 +1,7 @@
-from get_stock_data import download_all
-
-#Download Stocks
-download_all()
+# from get_stock_data import download_all
+#
+# #Download Stocks
+# download_all()
 
 
 
@@ -9,9 +9,10 @@ import os
 import pandas as pd
 from gan import GAN
 import random
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 import xgboost as xgb
-from sklearn.externals import joblib
+import joblib
 
 
 os.environ["CUDA_VISIBLE_DEVICES"]=""
@@ -32,7 +33,7 @@ class Predict:
         for file in files:
             print(file)
             df = pd.read_csv(file, index_col='Date', parse_dates=True)
-            df = df[['Open','High','Low','Close','Volume']]
+            df = df[['Open','High','Low','Close','Volume','RSI','MACD','Signal line','%K']]
             df = ((df -
             df.rolling(num_historical_days).mean().shift(-num_historical_days))
             /(df.rolling(num_historical_days).max().shift(-num_historical_days)
@@ -42,8 +43,8 @@ class Predict:
 
 
     def gan_predict(self):
-    	tf.reset_default_graph()
-        gan = GAN(num_features=5, num_historical_days=self.num_historical_days,
+        tf.reset_default_graph()
+        gan = GAN(num_features=9, num_historical_days=self.num_historical_days,
                         generator_input_size=200, is_train=False)
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
@@ -51,12 +52,12 @@ class Predict:
             saver.restore(sess, self.gan_model)
             clf = joblib.load(self.xgb_model)
             for sym, date, data in self.data:
-	            features = sess.run(gan.features, feed_dict={gan.X:[data]})
-	            features = xgb.DMatrix(features)
-	            print('{} {} {}'.format(str(date).split(' ')[0], sym, clf.predict(features)[0][1] > 0.5))
-	            
+                features = sess.run(gan.features, feed_dict={gan.X:[data]})
+                features = xgb.DMatrix(features)
+                print('{} {} {}'.format(str(date).split(' ')[0], sym, clf.predict(features)[0][1] > 0.5))
+
 
 
 if __name__ == '__main__':
-	p = Predict()
-	p.gan_predict()
+    p = Predict()
+    p.gan_predict()

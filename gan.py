@@ -1,10 +1,11 @@
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 import numpy as np
 import matplotlib.pyplot as plt
 import os
 
 SEED = 42
-tf.set_random_seed(SEED)
+tf.set_random_seed(1)
 
 class GAN():
 
@@ -34,8 +35,8 @@ class GAN():
             # h1 = tf.nn.batch_norm_with_global_normalization(h1, v1, m1,
             #         beta1, gamma1, variance_epsilon=0.000001, scale_after_normalization=False)
 
-            W2 = tf.Variable(tf.truncated_normal([generator_output_size*10, generator_output_size*5]))
-            b2 = tf.Variable(tf.truncated_normal([generator_output_size*5]))
+            W2 = tf.Variable(tf.truncated_normal([generator_output_size*10, generator_output_size*9]))
+            b2 = tf.Variable(tf.truncated_normal([generator_output_size*9]))
 
             h2 = tf.nn.sigmoid(tf.matmul(h1, W2) + b2)
 
@@ -44,7 +45,7 @@ class GAN():
             #         beta2, gamma2, variance_epsilon=0.000001, scale_after_normalization=False)
 
 
-            W3 = tf.Variable(tf.truncated_normal([generator_output_size*5, generator_output_size]))
+            W3 = tf.Variable(tf.truncated_normal([generator_output_size*9, generator_output_size]))
             b3 = tf.Variable(tf.truncated_normal([generator_output_size]))
 
             g_log_prob = tf.matmul(h2, W3) + b3
@@ -146,3 +147,4 @@ class GAN():
 
         self.D_solver = tf.train.AdamOptimizer(learning_rate=0.0001).minimize(self.D_loss, var_list=theta_D)
         self.G_solver = tf.train.AdamOptimizer(learning_rate=0.000055).minimize(self.G_loss, var_list=theta_G)
+print("jack")

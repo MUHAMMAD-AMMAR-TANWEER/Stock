@@ -2,7 +2,8 @@ import os
 import pandas as pd
 from gan import GAN
 import random
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
 random.seed(42)
 class TrainGan:
@@ -15,7 +16,7 @@ class TrainGan:
             print(file)
             #Read in file -- note that parse_dates will be need later
             df = pd.read_csv(file, index_col='Date', parse_dates=True)
-            df = df[['Open','High','Low','Close','Volume']]
+            df = df[['Open','High','Low','Close','Volume','RSI','MACD','Signal line','%K']]
             # #Create new index with missing days
             # idx = pd.date_range(df.index[-1], df.index[0])
             # #Reindex and fill the missing day with the value from the day before
@@ -35,7 +36,7 @@ class TrainGan:
             for i in range(num_historical_days, len(df), num_historical_days):
                 self.data.append(df.values[i-num_historical_days:i])
 
-        self.gan = GAN(num_features=5, num_historical_days=num_historical_days,
+        self.gan = GAN(num_features=9, num_historical_days=num_historical_days,
                         generator_input_size=200)
 
     def random_batch(self, batch_size=128):
@@ -57,7 +58,7 @@ class TrainGan:
         sess.run(tf.global_variables_initializer())
         saver = tf.train.Saver()
         with open('./models/checkpoint', 'rb') as f:
-            model_name = next(f).split('"')[1]
+            model_name = (next(f).decode('utf-8').split('"')[1])
         saver.restore(sess, "./models/{}".format(model_name))
         for i, X in enumerate(self.random_batch(self.batch_size)):
             if i % 1 == 0:

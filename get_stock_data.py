@@ -4,6 +4,7 @@ import requests
 import pandas as pd
 from dateutil.parser import parse
 import threading
+import time
 
 
 
@@ -141,6 +142,7 @@ def download_all():
 
 
         download(i,symbol)
+        time.sleep(2)
         print(i)
         transform_data(symbol)
         print(i)

@@ -1,7 +1,7 @@
-# from get_stock_data import download_all
+from get_stock_data import download_all
 #
-# #Download Stocks
-# download_all()
+#Download Stocks
+download_all()
 
 
 
@@ -19,7 +19,7 @@ os.environ["CUDA_VISIBLE_DEVICES"]=""
 
 class Predict:
 
-    def __init__(self, num_historical_days=20, days=10, pct_change=0, gan_model='./deployed_models/gan', cnn_modle='./deployed_models/cnn', xgb_model='./deployed_models/xgb'):
+    def __init__(self, num_historical_days=20, days=10, pct_change=0, gan_model='./models/gan', cnn_modle='./cnn_models/cnn', xgb_model='./deployed_models/clf.pkl'):
         self.data = []
         self.num_historical_days = num_historical_days
         self.gan_model = gan_model

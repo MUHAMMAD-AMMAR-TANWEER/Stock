@@ -57,9 +57,9 @@ class TrainGan:
         D_l2_loss = 0
         sess.run(tf.global_variables_initializer())
         saver = tf.train.Saver()
-        with open('./models/checkpoint', 'rb') as f:
-            model_name = (next(f).decode('utf-8').split('"')[1])
-        saver.restore(sess, "./models/{}".format(model_name))
+        # with open('./models/checkpoint', 'rb') as f:
+        #     model_name = (next(f).decode('utf-8').split('"')[1])
+        # saver.restore(sess, "./models/{}".format(model_name))
         for i, X in enumerate(self.random_batch(self.batch_size)):
             if i % 1 == 0:
                 _, D_loss_curr, D_l2_loss_curr = sess.run([self.gan.D_solver, self.gan.D_loss, self.gan.D_l2_loss], feed_dict=

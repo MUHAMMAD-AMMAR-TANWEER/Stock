@@ -96,4 +96,4 @@ class TrainXGBBoost:
 
 boost_model = TrainXGBBoost(num_historical_days=20, days=10, pct_change=10)
 boost_model.train()
-boost_model.save()
+#

@@ -146,7 +146,7 @@ def download_all():
         print(i)
         transform_data(symbol)
         print(i)
-        break
+
 
 if __name__ == '__main__':
     download_all()
